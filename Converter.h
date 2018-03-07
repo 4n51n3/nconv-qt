@@ -21,6 +21,15 @@ public:
     }
 };
 
+class EmptyStringException : public ConvertException {
+public:
+    string msg = "[EXCEPTION] EmptyStringException.";
+
+    const char *what() {
+        return msg.c_str();
+    }
+};
+
 class BaseOutOfRangeException : public ConvertException {
 public:
     string msg = "[EXCEPTION] Base must be smaller than 37 and bigger than 1.";
@@ -80,6 +89,9 @@ public:
     }
 
     uint GetDecNumber(string str, uint base) {
+        if(str.empty())
+            throw  EmptyStringException();
+        toUpper(str);
         if (!IsAlphaNum(str))
             throw NotAllowedSymbolException();
         uint dec = 0;
