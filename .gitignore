@@ -14,3 +14,4 @@ qt_plugin_import\.cpp
 qt
 
 ui_mainwindow\.h
+*.exe
