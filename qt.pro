@@ -21,5 +21,5 @@ DEFINES += QT_DEPRECATED_WARNINGS
 HEADERS += mainwindow.h ui_mainwindow.h
 FORMS += mainwindow.ui
 SOURCES += mainwindow.cpp qt.cpp
-QT += widgets
+QT += gui widgets 
 CONFIG += static

@@ -3,6 +3,7 @@
 #include <map>
 #include <cmath>
 #include <exception>
+#include <sstream>
 
 using namespace std;
 
@@ -48,6 +49,39 @@ public:
     }
 };
 
+
+struct Number{
+    string digits;
+    uint base;
+    uint intDecPiece;
+    uint fraDecPiece;
+
+    Number() : digits(""), base(0), intDecPiece(0), fraDecPiece(0){
+
+    }
+
+    Number(string str, uint bas) : digits(str), base(bas),intDecPiece(0), fraDecPiece(0){
+
+    }
+
+
+    void split(){
+        const std::string &s = digits;
+        std::stringstream intPart(s);
+        std::stringstream fraPart;
+        int size = s.size();
+        for(int i = 0; i < size; i++) {
+            if(s[i] == '.' || s[i] == ','){
+                for(int z = i; z < size; z++){
+                    fraPart << s[z];
+                }
+            }
+            intPart << s[i];
+        }
+        //intPart = stoi()
+    }
+};
+
 class Converter {
 private:
     typedef unsigned long ulong;
@@ -67,6 +101,9 @@ private:
     bool IsAlphaNum(string number) {
         ulong size = number.size();
         for (int i = 0; i < size; i++) {
+            if(number[i] == '.' || number[i] == ','){
+                continue;
+            }
             if (!isalnum(number[i])) {
                 return false;
             }
@@ -89,14 +126,15 @@ public:
     }
 
     uint GetDecNumber(string str, uint base) {
-        if(str.empty())
-            throw  EmptyStringException();
-        toUpper(str);
+        if (str.empty())
+            throw EmptyStringException();
         if (!IsAlphaNum(str))
             throw NotAllowedSymbolException();
+
+        toUpper(str);
         uint dec = 0;
         reverse(str.begin(), str.end());
-        for (int i = 0; i < str.size(); i++) {
+        for (uint i = 0; i < str.size(); i++) {
             if (charInt[str[i]] >= base) {
                 throw DigitGreaterThanBaseException();
             }

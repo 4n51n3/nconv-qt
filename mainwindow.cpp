@@ -7,7 +7,7 @@ using namespace std;
 MainWindow::MainWindow(QWidget *parent)
         : QWidget(parent) {
     ui.setupUi(this);
-  //  connect(ui.convertButton, SIGNAL(released()), this, SLOT(on_convertButton_clicked()));
+    //  connect(ui.convertButton, SIGNAL(released()), this, SLOT(on_convertButton_clicked()));
 }
 
 void MainWindow::on_convertButton_clicked() {

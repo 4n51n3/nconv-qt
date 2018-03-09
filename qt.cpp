@@ -1,4 +1,5 @@
 #include <QApplication>
+#include <QPalette>
 #include <iostream>
 #include "mainwindow.h"
 
