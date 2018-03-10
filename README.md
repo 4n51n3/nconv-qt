@@ -1,4 +1,4 @@
 qt
 
 '''Build win'''
-Add -static-libstdc++ -static-libgcc
+Add to linker -static-libstdc++ -static-libgcc -static -lpthread
