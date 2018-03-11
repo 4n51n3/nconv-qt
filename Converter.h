@@ -11,6 +11,7 @@
 #include <exception>
 #include <sstream>
 #include <utility>
+#include <regex>
 
 
 using namespace std;
@@ -78,8 +79,6 @@ Number::Number(string str, uint bas) : digits(std::move(str)), base(bas) {
     fraDecPiece = 0;
     if (digits.empty())
         throw EmptyStringException();
-    if(isDelim(digits[0]))
-        throw NotAllowedSymbolException();
     if (!isAlphaNum(digits))
         throw NotAllowedSymbolException();
 
@@ -180,13 +179,15 @@ void Number::toUpper(string &str) {
 }
 
 bool Number::isAlphaNum(const string &number) {
-    bool rez = std::all_of(number.begin(), number.end(),
-                           [](char c) {
-                               if (c == '.' || c == ',')
-                                   return true;
-                               return (bool) isalnum(c);
-                           });
+    bool rez = std::regex_match(number, std::regex("^[0-9]*[\\.\\,]?[0-9]+$"));
     return rez;
+//    bool rez = std::all_of(number.begin(), number.end(),
+//                           [](char c) {
+//                               if (c == '.' || c == ',')
+//                                   return true;
+//                               return (bool) isalnum(c);
+//                           });
+//    return rez;
 }
 
 bool Number::isDelim(const char ch){
