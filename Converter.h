@@ -7,11 +7,11 @@
 
 #include <iostream>
 #include <algorithm>
-#include <map>
 #include <cmath>
 #include <exception>
 #include <sstream>
 #include <utility>
+
 
 using namespace std;
 namespace exc {
@@ -55,35 +55,56 @@ class Number {
 public:
     const string digits;
     const uint base;
-    uint intDecPiece; /// merge to long double than modf
+    uint intDecPiece; //// merge to long double than modf
     long double fraDecPiece;
 
     Number(string str, uint bas); //digits(std::move(str)), base(bas)
     string toBase(const uint newBase);
 
 private:
-    void split();
-
     uint getDec(string str);
 
     long double getDec(string str, bool fra);
 
     void toUpper(string &str);
 
-    bool isAlphaNum(string number);
+    bool isAlphaNum(const string& number);
+
+    bool isDelim(const char c);
 };
 
 Number::Number(string str, uint bas) : digits(std::move(str)), base(bas) {
     intDecPiece = 0;
     fraDecPiece = 0;
-    if (!isAlphaNum(digits))
-        throw NotAllowedSymbolException();
     if (digits.empty())
         throw EmptyStringException();
-    split();
+    if(isDelim(digits[0]))
+        throw NotAllowedSymbolException();
+    if (!isAlphaNum(digits))
+        throw NotAllowedSymbolException();
+
+    std::stringstream intSS;
+    std::stringstream fraSS;
+    size_t size = digits.size();
+    for (int i = 0; i < size; i++) {
+        if (isDelim(digits[i])) {
+            for (int z = i + 1; z < size; z++) {
+                fraSS << digits[z];
+            }
+            break;
+        }
+        intSS << digits[i];
+    }
+
+    intDecPiece = getDec(intSS.str());
+    if (!fraSS.str().empty())
+        fraDecPiece = getDec(fraSS.str(), true);
 }
 
 string Number::toBase(const uint newBase) {
+    if(intDecPiece == 0 && fraDecPiece == 0)
+        return string("0.0");
+
     uint div = intDecPiece;
     stringstream rez;
 
@@ -110,29 +131,11 @@ string Number::toBase(const uint newBase) {
         }
         string fraPart(rez.str());
 
+        if(intDecPiece == 0)
+            return "0." + fraPart;
         return intPart + "." + fraPart;
     }
     return intPart;
-}
-
-void Number::split() {
-    ///////////////////////////////////////////It needs refactor///////////////////////////////////////////////
-    std::stringstream intSS;
-    std::stringstream fraSS;
-    size_t size = digits.size();
-    for (int i = 0; i < size; i++) {
-        if (digits[i] == '.' || digits[i] == ',') {
-            for (int z = i + 1; z < size; z++) {
-                fraSS << digits[z];
-            }
-            break;
-        }
-        intSS << digits[i];
-    }
-
-    intDecPiece = getDec(intSS.str());
-    if (!fraSS.str().empty())
-        fraDecPiece = getDec(fraSS.str(), true);
 }
 
 uint Number::getDec(string str) {
@@ -176,25 +179,21 @@ void Number::toUpper(string &str) {
     }
 }
 
-bool Number::isAlphaNum(string number) {
+bool Number::isAlphaNum(const string &number) {
     bool rez = std::all_of(number.begin(), number.end(),
                            [](char c) {
-                               if (c == ',' || c == '.')
+                               if (c == '.' || c == ',')
                                    return true;
-                               return (bool)isalnum(c);
+                               return (bool) isalnum(c);
                            });
     return rez;
+}
 
-//    ulong size = number.size();
-//    for (int i = 0; i < size; i++) {
-//        if (number[i] == '.' || number[i] == ',') {
-//            continue;
-//        }
-//        if (!isalnum(number[i])) {
-//            return false;
-//        }
-//    }
-//    return true;
+bool Number::isDelim(const char ch){
+    if(ch == '.' || ch == ',')
+        return true;
+    else
+        return false;
 }
 
 #endif //CONVERTER_CONVERTER_H
