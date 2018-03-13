@@ -144,8 +144,8 @@ uint Number::getDec(string str) {
 
     for (uint i = 0; i < str.size(); i++) {
         int tmp;
-        if (base > 10)
-            tmp = str[i] - 'A' + 10;
+        if ((int)str[i] >= 'A')
+            tmp = str[i] - ('A' - 10);
         else
             tmp = str[i] - '0';
         if (tmp >= base)
@@ -160,10 +160,10 @@ long double Number::getDec(string str, bool fra) {
     long double dec = 0;
     for (int i = -1; i >= -str.size(); i--) {
         int tmp;
-        if (base > 10)
-            tmp = (str[-(i + 1)] - 'A' + 10);
+        if ((int)str[-(i + 1)] >= 'A')
+            tmp = str[-(i + 1)] - ('A' - 10);
         else
-            tmp = (str[-(i + 1)] - '0');
+            tmp = str[-(i + 1)] - '0';
         if (tmp >= base)
             throw DigitGreaterThanBaseException();
         dec += tmp * pow(base, i);
@@ -179,15 +179,8 @@ void Number::toUpper(string &str) {
 }
 
 bool Number::isAlphaNum(const string &number) {
-    bool rez = std::regex_match(number, std::regex("^[0-9]*[\\.\\,]?[0-9]+$"));
+    bool rez = std::regex_match(number, std::regex("^[0-9A-Za-z]*[\\.\\,]?[0-9A-Za-z]+$"));
     return rez;
-//    bool rez = std::all_of(number.begin(), number.end(),
-//                           [](char c) {
-//                               if (c == '.' || c == ',')
-//                                   return true;
-//                               return (bool) isalnum(c);
-//                           });
-//    return rez;
 }
 
 bool Number::isDelim(const char ch){
